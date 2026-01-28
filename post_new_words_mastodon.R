@@ -7,10 +7,14 @@ fname <- paste0("~/Data/new_word_lists/New_words_", yesterday, ".txt")
 
 new_words_today <- read.csv(fname, header = T, sep = "\t")
 
+cat("Read", nrow(new_words_today), "new words from yesterday.\n")
+
 top5 <- new_words_today[1:5,]
 rest <- new_words_today[6:nrow(new_words_today),]
 random5 <- dplyr::slice_sample(rest, n = 5)
 random5_without_dash <- dplyr::slice_sample(rest[!grepl("-", rest$wordform),], n = 5)
+
+cat("Word selection finished.\n")
 
 german_date <- paste0(day(yesterday), ".", month(yesterday), ".", year(yesterday))
 
@@ -39,4 +43,6 @@ toot <- paste0(sample(intros, 1), "\n\n",
                "\n\n~~~Zufällige 5 ohne Bindestrich~~~\n\n",
                paste(random5_without_dash_text, collapse = "\n"),
                "\n\nInsgesamt habe ich gestern ", nrow(new_words_today), " neue Wortformen entdeckt.\n\n#neuewoerter")
+cat("Toot built.\n")
 post_toot(toot)
+cat("Success!\n")
