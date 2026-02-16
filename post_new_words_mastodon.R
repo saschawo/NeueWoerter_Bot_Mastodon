@@ -14,7 +14,8 @@ cat("Read", nrow(new_words_today), "new words from yesterday.\n")
 top5 <- new_words_today[1:5,]
 rest <- new_words_today[6:nrow(new_words_today),]
 random5 <- dplyr::slice_sample(rest, n = 5)
-random5_without_dash <- dplyr::slice_sample(rest[!grepl("-", rest$wordform),], n = 5)
+rest2 <- rest[!rest$wordform %in% random5$wordform,]
+random5_without_dash <- dplyr::slice_sample(rest2[!grepl("-", rest2$wordform),], n = 5)
 
 cat("Word selection finished.\n")
 
