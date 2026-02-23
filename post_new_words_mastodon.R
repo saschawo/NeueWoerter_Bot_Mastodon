@@ -1,5 +1,6 @@
 library(rtoot)
 library(lubridate)
+library(stringr)
 
 toot_token <- readRDS("/home/pi/.config/R/rtoot/rtoot_token.rds")
 
@@ -10,6 +11,12 @@ fname <- paste0("~/Data/new_word_lists/New_words_", yesterday, ".txt")
 new_words_today <- read.csv(fname, header = T, sep = "\t")
 
 cat("Read", nrow(new_words_today), "new words from yesterday.\n")
+
+# New selection criterion:
+# String has to contain more letters than numbers.
+new_words_today$n_digits <- str_count(new_words_today$wordform, "[[:digit:]]")
+new_words_today$n_letters <- str_count(new_words_today$wordform, "[[:alpha:]]")
+new_words_today <- new_words_today[new_words_today$n_letters > new_words_today$n_digits,]
 
 top5 <- new_words_today[1:5,]
 rest <- new_words_today[6:nrow(new_words_today),]
@@ -32,7 +39,9 @@ intros <- c(paste0("Diese Wörter wurden gestern (", german_date, ") zum ersten 
             paste0("Diese Wortformen habe ich gestern, den ", german_date, ", zum ersten Mal gesehen."),
             paste0("NEU NEU NEU - Zum ersten Mal gestern (", german_date, ") entdeckt:"),
             paste0("Jeden Tag find ich neue Wortformen. Gestern (", german_date, ") waren es diese hier."),
-            paste0("Auch heute noch nie dagewesene Wörter vom Vortag (", german_date, ")!"))
+            paste0("Auch heute noch nie dagewesene Wörter vom Vortag (", german_date, ")!"),
+            paste0("Gestern, am ", german_date, " waren diese Wortformen neu:"),
+            paste0("Mal wieder neue Wörter von mir! Diese hier gabs am ", german_date, ":"))
 
 top5_text <- paste0(top5$wordform, ": ", top5$freq, "x")
 random5_text <- paste0(random5$wordform, ": ", random5$freq, "x")
